@@ -115,6 +115,46 @@ const cherryPickPR = async (
   }).status();
 };
 
+const createBackportPR = async (
+  originalPr: { title: string; number: number; body: string },
+  giteaMajorMinorVersion: string
+) => {
+  const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/pulls`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${Deno.env.get("GITHUB_TOKEN")}`,
+    },
+    body: JSON.stringify({
+      title: `${originalPr.title} (backport #${originalPr.number})`,
+      head: `yardenshoham:${getPrBranchName(
+        originalPr.number,
+        giteaMajorMinorVersion
+      )}`,
+      base: `release/v${giteaMajorMinorVersion}`,
+      body: `Backport #${originalPr.number}\n` + originalPr.body,
+    }),
+  });
+  const json = await response.json();
+  console.log(`Created backport PR: ${json.html_url}`);
+};
+
+const addBackportDoneLabel = async (prNumber: number) => {
+  const response = await fetch(
+    `${GITHUB_API}/repos/go-gitea/gitea/issues/${prNumber}/labels`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Deno.env.get("GITHUB_TOKEN")}`,
+      },
+      body: JSON.stringify({ labels: "backport/done" }),
+    }
+  );
+  const json = await response.json();
+  console.log(`Added backport/done label to PR: ${json.html_url}`);
+};
+
 const run = async () => {
   const giteaMajorMinorVersion = await getGiteaMajorMinorVersion();
   const candidates = await fetchCandidates(giteaMajorMinorVersion);
@@ -127,8 +167,14 @@ const run = async () => {
     if (await doesBackportPRExist(candidate.number, giteaMajorMinorVersion)) {
       continue;
     }
-    console.log(`Creating backport PR for #${candidate.number}`);
+    console.log(`Cherry-picking #${candidate.number}`);
     await cherryPickPR(candidate.number, giteaMajorMinorVersion);
+
+    console.log(`Creating backport PR for #${candidate.number}`);
+    await createBackportPR(candidate, giteaMajorMinorVersion);
+
+    console.log(`Adding backport/done label to #${candidate.number}`);
+    await addBackportDoneLabel(candidate.number);
   }
 };
 
