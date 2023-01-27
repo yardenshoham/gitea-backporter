@@ -148,7 +148,7 @@ const addBackportDoneLabel = async (prNumber: number) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${Deno.env.get("GITHUB_TOKEN")}`,
       },
-      body: JSON.stringify({ labels: "backport/done" }),
+      body: JSON.stringify({ labels: ["backport/done"] }),
     }
   );
   const json = await response.json();
