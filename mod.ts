@@ -126,7 +126,7 @@ const createBackportPR = async (
       Authorization: `Bearer ${Deno.env.get("GITHUB_TOKEN")}`,
     },
     body: JSON.stringify({
-      title: `${originalPr.title} (backport #${originalPr.number})`,
+      title: `${originalPr.title} (#${originalPr.number})`,
       head: `yardenshoham:${getPrBranchName(
         originalPr.number,
         giteaMajorMinorVersion
