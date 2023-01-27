@@ -1,0 +1,79 @@
+const GITHUB_API = "https://api.github.com";
+
+// returns the current Gitea major minor version
+const getGiteaMajorMinorVersion = async () => {
+  const versionRequest = await fetch("https://dl.gitea.io/gitea/version.json");
+  const versionJson = await versionRequest.json();
+  const majorMinorVersionRegexResult =
+    versionJson.latest.version.match(/(1\.\d+).*/);
+  if (majorMinorVersionRegexResult === null) {
+    throw new Error("Failed to extract major minor version from Gitea version");
+  }
+  return majorMinorVersionRegexResult[1];
+};
+
+// returns a list of PRs that are merged and have the backport label for the current Gitea version
+const fetchCandidates = async (giteaMajorMinorVersion: string) => {
+  const response = await fetch(
+    `${GITHUB_API}/search/issues?q=` +
+      encodeURIComponent(
+        `is:pr is:merged label:backport/v${giteaMajorMinorVersion} -label:backport/done repo:go-gitea/gitea`
+      )
+  );
+  return await response.json();
+};
+
+// returns true if a backport PR exists for the given PR number and Gitea version
+const doesBackportPRExist = async (
+  prNumber: number,
+  giteaMajorMinorVersion: string
+) => {
+  const response = await fetch(
+    `${GITHUB_API}/search/issues?q=` +
+      encodeURIComponent(
+        `is:pr is:open repo:go-gitea/gitea base:release/v${giteaMajorMinorVersion} ${prNumber} in:title`
+      )
+  );
+  const json = await response.json();
+  return json.total_count > 0;
+};
+
+const initializeGitRepo = async () => {
+  await Deno.run({
+    cmd: [
+      "git",
+      "clone",
+      "--depth",
+      "1",
+      "https://github.com/yardenshoham/gitea.git",
+    ],
+  }).status();
+  await Deno.run({
+    cwd: "gitea",
+    cmd: [
+      "git",
+      "remote",
+      "add",
+      "upstream",
+      "https://github.com/go-gitea/gitea.git",
+    ],
+  }).status();
+};
+
+const run = async () => {
+  const giteaMajorMinorVersion = await getGiteaMajorMinorVersion();
+  const candidates = await fetchCandidates(giteaMajorMinorVersion);
+  if (candidates.total_count === 0) {
+    console.log("No candidates found");
+    return;
+  }
+  await initializeGitRepo();
+  for (const candidate of candidates.items) {
+    if (await doesBackportPRExist(candidate.number, giteaMajorMinorVersion)) {
+      continue;
+    }
+    console.log(`Creating backport PR for #${candidate.number}`);
+  }
+};
+
+run();
