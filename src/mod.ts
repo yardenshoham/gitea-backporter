@@ -33,7 +33,7 @@ const run = async () => {
     await cherryPickPr(
       originalPr.merge_commit_sha,
       originalPr.number,
-      giteaVersion.majorMinorVersion
+      giteaVersion.majorMinorVersion,
     );
 
     console.log(`Creating backport PR for #${originalPr.number}`);

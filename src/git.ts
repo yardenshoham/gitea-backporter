@@ -1,6 +1,6 @@
 export const getPrBranchName = (
   prNumber: number,
-  giteaMajorMinorVersion: string
+  giteaMajorMinorVersion: string,
 ) => `backport-${prNumber}-v${giteaMajorMinorVersion}`;
 
 export const initializeGitRepo = async () => {
@@ -26,7 +26,7 @@ export const initializeGitRepo = async () => {
 export const cherryPickPr = async (
   commitHash: string,
   prNumber: number,
-  giteaMajorMinorVersion: string
+  giteaMajorMinorVersion: string,
 ) => {
   // fetch the upstream main branch
   await Deno.run({
