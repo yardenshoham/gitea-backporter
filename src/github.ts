@@ -46,6 +46,7 @@ export const createBackportPr = async (
     number: number;
     body: string;
     labels: [{ name: string }];
+    user: { login: string };
   },
   giteaMajorMinorVersion: string
 ) => {
@@ -73,15 +74,15 @@ export const createBackportPr = async (
       return !label.startsWith("lgtm/") && !label.startsWith("backport/");
     });
 
-  // add labels to backport PR
-  await fetch(
-    `${GITHUB_API}/repos/go-gitea/gitea/issues/${json.number}/labels`,
-    {
-      method: "POST",
-      headers: HEADERS,
-      body: JSON.stringify({ labels }),
-    }
-  );
+  // set labels, assignees and (TODO) milestone
+  await fetch(`${GITHUB_API}/repos/go-gitea/gitea/issues/${json.number}`, {
+    method: "PATCH",
+    headers: HEADERS,
+    body: JSON.stringify({
+      labels,
+      assignees: [originalPr.user.login],
+    }),
+  });
 };
 
 export const addBackportDoneLabel = async (prNumber: number) => {
