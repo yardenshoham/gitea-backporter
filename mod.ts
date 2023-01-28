@@ -132,7 +132,7 @@ const createBackportPR = async (
         giteaMajorMinorVersion
       )}`,
       base: `release/v${giteaMajorMinorVersion}`,
-      body: `Backport #${originalPr.number}\n` + originalPr.body,
+      body: `Backport #${originalPr.number}\n\n` + originalPr.body,
     }),
   });
   const json = await response.json();
