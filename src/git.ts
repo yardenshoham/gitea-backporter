@@ -5,7 +5,11 @@ export const getPrBranchName = (
 
 export const initializeGitRepo = async () => {
   await Deno.run({
-    cmd: ["git", "clone", "https://github.com/yardenshoham/gitea.git"],
+    cmd: [
+      "git",
+      "clone",
+      `https://github.com/${Deno.env.get("GITEA_FORK")}.git`,
+    ],
   }).status();
   await Deno.run({
     cwd: "gitea",
