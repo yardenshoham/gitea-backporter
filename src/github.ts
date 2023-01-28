@@ -15,7 +15,11 @@ export const fetchCandidates = async (giteaMajorMinorVersion: string) => {
         `is:pr is:merged label:backport/v${giteaMajorMinorVersion} -label:backport/done repo:go-gitea/gitea`
       )
   );
-  return await response.json();
+  const json = await response.json();
+  for (const item of json.items) {
+    console.log(`- ${item.title} (#${item.number})`);
+  }
+  return json;
 };
 
 // returns the PR
@@ -61,7 +65,7 @@ export const createBackportPr = async (
   },
   giteaVersion: GiteaVersion
 ) => {
-  const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/pulls`, {
+  let response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/pulls`, {
     method: "POST",
     headers: HEADERS,
     body: JSON.stringify({
@@ -75,7 +79,7 @@ export const createBackportPr = async (
       maintainer_can_modify: true,
     }),
   });
-  const json = await response.json();
+  let json = await response.json();
   console.log(`Created backport PR: ${json.html_url}`);
 
   // filter lgtm/* and backport/* labels
@@ -86,15 +90,22 @@ export const createBackportPr = async (
     });
 
   // set labels, assignees, and milestone
-  await fetch(`${GITHUB_API}/repos/go-gitea/gitea/issues/${json.number}`, {
-    method: "PATCH",
-    headers: HEADERS,
-    body: JSON.stringify({
-      labels,
-      assignees: [originalPr.user.login],
-      milestone: await getMilestoneNumber(giteaVersion.nextPatchVersion),
-    }),
-  });
+  response = await fetch(
+    `${GITHUB_API}/repos/go-gitea/gitea/issues/${json.number}`,
+    {
+      method: "PATCH",
+      headers: HEADERS,
+      body: JSON.stringify({
+        labels,
+        assignees: [originalPr.user.login],
+        milestone: await getMilestoneNumber(giteaVersion.nextPatchVersion),
+      }),
+    }
+  );
+  json = await response.json();
+  console.log("Labels:", json.labels);
+  console.log("Assignees:", json.assignees);
+  console.log("Milestone:", json.milestone);
 };
 
 export const addBackportDoneLabel = async (prNumber: number) => {

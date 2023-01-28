@@ -18,6 +18,7 @@ const run = async () => {
   await initializeGitRepo();
   for (const candidate of candidates.items) {
     if (await backportPrExists(candidate, giteaVersion.majorMinorVersion)) {
+      console.log(`Backport PR already exists for #${candidate.number}`);
       continue;
     }
     const originalPr = await fetchPr(candidate.number);
