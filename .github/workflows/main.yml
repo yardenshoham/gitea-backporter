@@ -12,7 +12,6 @@ on:
   push:
     branches:
     - main
-    - deploy
 
 jobs:
   main:
@@ -28,11 +27,7 @@ jobs:
           actor: ${{ github.repository_owner }}
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
       - name: run
-        run: |
-          # print configured git user and email
-          git config --global user.name
-          git config --global user.email
-          # deno run --allow-net --allow-env src/mod.ts
+        run: deno run --allow-net --allow-env src/mod.ts
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           GITEA_FORK: ${{ github.repository_owner }}/gitea
