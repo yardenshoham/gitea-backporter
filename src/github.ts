@@ -41,7 +41,12 @@ export const backportPrExists = async (
 };
 
 export const createBackportPr = async (
-  originalPr: { title: string; number: number; body: string },
+  originalPr: {
+    title: string;
+    number: number;
+    body: string;
+    labels: [{ name: string }];
+  },
   giteaMajorMinorVersion: string
 ) => {
   const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/pulls`, {
@@ -60,6 +65,23 @@ export const createBackportPr = async (
   });
   const json = await response.json();
   console.log(`Created backport PR: ${json.html_url}`);
+
+  // filter lgtm/* and backport/* labels
+  const labels = originalPr.labels
+    .map((label) => label.name)
+    .filter((label) => {
+      return !label.startsWith("lgtm/") && !label.startsWith("backport/");
+    });
+
+  // add labels to backport PR
+  await fetch(
+    `${GITHUB_API}/repos/go-gitea/gitea/issues/${json.number}/labels`,
+    {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify({ labels }),
+    }
+  );
 };
 
 export const addBackportDoneLabel = async (prNumber: number) => {

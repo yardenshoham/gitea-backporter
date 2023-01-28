@@ -29,7 +29,7 @@ const run = async () => {
     );
 
     console.log(`Creating backport PR for #${originalPr.number}`);
-    await createBackportPr(candidate, giteaMajorMinorVersion);
+    await createBackportPr(originalPr, giteaMajorMinorVersion);
 
     console.log(`Adding backport/done label to #${originalPr.number}`);
     await addBackportDoneLabel(originalPr.number);
