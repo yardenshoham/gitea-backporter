@@ -6,7 +6,7 @@ const getGiteaVersion = async () => {
 };
 
 // returns the current Gitea major minor version
-export const getGiteaMajorMinorVersion = async () => {
+const getGiteaMajorMinorVersion = async () => {
   const version = await getGiteaVersion();
   const majorMinorVersionRegexResult = version.match(/(1\.\d+).*/);
   if (majorMinorVersionRegexResult === null) {
@@ -16,7 +16,7 @@ export const getGiteaMajorMinorVersion = async () => {
 };
 
 // returns the current Gitea version with the patch version set incremented by 1
-export const getGiteaNextPatchVersion = async () => {
+const getGiteaNextPatchVersion = async () => {
   const version = await getGiteaVersion();
   const nextPatchVersionRegexResult = version.match(/(1\.\d+\.)(\d+)/);
   if (nextPatchVersionRegexResult === null) {
@@ -27,3 +27,24 @@ export const getGiteaNextPatchVersion = async () => {
     (parseInt(nextPatchVersionRegexResult[2]) + 1)
   );
 };
+
+export class GiteaVersion {
+  majorMinorVersion: string;
+  nextPatchVersion: string;
+
+  static async fetch() {
+    const giteaVersion = new GiteaVersion();
+    await giteaVersion.init();
+    return giteaVersion;
+  }
+
+  private constructor() {
+    this.majorMinorVersion = "";
+    this.nextPatchVersion = "";
+  }
+
+  async init() {
+    this.majorMinorVersion = await getGiteaMajorMinorVersion();
+    this.nextPatchVersion = await getGiteaNextPatchVersion();
+  }
+}
