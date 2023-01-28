@@ -9,6 +9,13 @@ import {
 } from "./github.ts";
 
 const run = async () => {
+  if (
+    Deno.env.get("GITEA_FORK") === undefined ||
+    Deno.env.get("GITHUB_TOKEN") === undefined
+  ) {
+    console.log("GITEA_FORK and GITHUB_TOKEN must be set");
+    return;
+  }
   const giteaVersion = await GiteaVersion.fetch();
   const candidates = await fetchCandidates(giteaVersion.majorMinorVersion);
   if (candidates.total_count === 0) {

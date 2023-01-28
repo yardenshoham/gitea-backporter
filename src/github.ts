@@ -70,7 +70,7 @@ export const createBackportPr = async (
     headers: HEADERS,
     body: JSON.stringify({
       title: `${originalPr.title} (#${originalPr.number})`,
-      head: `yardenshoham:${getPrBranchName(
+      head: `${Deno.env.get("GITEA_FORK")?.split("/")[0]}:${getPrBranchName(
         originalPr.number,
         giteaVersion.majorMinorVersion
       )}`,
