@@ -1,0 +1,30 @@
+name: generate animation
+
+on:
+  # run automatically every 30 minutes
+  schedule:
+    - cron: '*/30 * * * *'
+  
+  # allows to manually run the job at any time
+  workflow_dispatch:
+  
+  # run on every push on the main branch
+  push:
+    branches:
+    - main
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1
+      - name: run
+        run: |
+          # print configured git user and email
+          git config --global user.name
+          git config --global user.email
+          # deno run --allow-net --allow-env src/mod.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          GITEA_FORK: ${{ github.repository_owner }}/gitea
