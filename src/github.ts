@@ -82,11 +82,15 @@ export const createBackportPr = async (
   let json = await response.json();
   console.log(`Created backport PR: ${json.html_url}`);
 
-  // filter lgtm/* and backport/* labels
+  // filter lgtm/*, backport/* and reviewed/* labels
   const labels = originalPr.labels
     .map((label) => label.name)
     .filter((label) => {
-      return !label.startsWith("lgtm/") && !label.startsWith("backport/");
+      return (
+        !label.startsWith("lgtm/") &&
+        !label.startsWith("backport/") &&
+        !label.startsWith("reviewed/")
+      );
     });
 
   // set labels, assignees, and milestone
