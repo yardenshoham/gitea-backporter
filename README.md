@@ -1,10 +1,10 @@
 # Gitea Pull Request Backporter
 
-This is a script that looks for pull requests in go-gitea/gitea that need to be backported to a release branch and if the backport can be automated, it will do so.
+This is a script that looks for pull requests in [go-gitea/gitea](https://github.com/go-gitea/gitea) that need to be backported to a release branch and if the backport can be automated, it will do so.
 
 ## Behavior
 
-First, the script will fetch Gitea's latest release version from the GitHub API.
+First, the script will fetch Gitea's latest release version from the Gitea's version endpoint.
 
 The script will look for pull requests that have the label `backport/v{gitea_version}` but do not have the label `backport/done`. It will clone your fork of gitea. It will then attempt to cherry-pick the pull request merged commit into the release branch. If the cherry-pick is successful, it will push the branch to the remote and create a pull request with the labels from the original pull request. 
 
