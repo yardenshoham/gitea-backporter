@@ -23,7 +23,7 @@ jobs:
       - uses: oleksiyrudenko/gha-git-credentials@v2.1.1
         with:
           global: true
-          name: ${{ variables.GIT_NAME }}
+          name: ${{ vars.GIT_NAME }}
           email: ${{ secrets.GIT_EMAIL }}
           actor: ${{ github.repository_owner }}
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
