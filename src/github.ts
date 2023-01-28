@@ -1,4 +1,5 @@
 import { getPrBranchName } from "./git.ts";
+import { GiteaVersion } from "./giteaVersion.ts";
 
 const GITHUB_API = "https://api.github.com";
 const HEADERS = {
@@ -40,6 +41,16 @@ export const backportPrExists = async (
   return json.total_count > 0;
 };
 
+// get milestone number for the given Gitea version
+export const getMilestoneNumber = async (milestoneTitle: string) => {
+  const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/milestones`);
+  const json = await response.json();
+  const milestone = json.find(
+    (m: { title: string }) => m.title === milestoneTitle
+  );
+  return milestone.number;
+};
+
 export const createBackportPr = async (
   originalPr: {
     title: string;
@@ -48,7 +59,7 @@ export const createBackportPr = async (
     labels: [{ name: string }];
     user: { login: string };
   },
-  giteaMajorMinorVersion: string
+  giteaVersion: GiteaVersion
 ) => {
   const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/pulls`, {
     method: "POST",
@@ -57,9 +68,9 @@ export const createBackportPr = async (
       title: `${originalPr.title} (#${originalPr.number})`,
       head: `yardenshoham:${getPrBranchName(
         originalPr.number,
-        giteaMajorMinorVersion
+        giteaVersion.majorMinorVersion
       )}`,
-      base: `release/v${giteaMajorMinorVersion}`,
+      base: `release/v${giteaVersion.majorMinorVersion}`,
       body: `Backport #${originalPr.number}\n\n` + originalPr.body,
       maintainer_can_modify: true,
     }),
@@ -74,13 +85,14 @@ export const createBackportPr = async (
       return !label.startsWith("lgtm/") && !label.startsWith("backport/");
     });
 
-  // set labels, assignees and (TODO) milestone
+  // set labels, assignees, and milestone
   await fetch(`${GITHUB_API}/repos/go-gitea/gitea/issues/${json.number}`, {
     method: "PATCH",
     headers: HEADERS,
     body: JSON.stringify({
       labels,
       assignees: [originalPr.user.login],
+      milestone: await getMilestoneNumber(giteaVersion.nextPatchVersion),
     }),
   });
 };
