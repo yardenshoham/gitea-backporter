@@ -1,4 +1,4 @@
-name: generate animation
+name: Main
 
 on:
   # run automatically every 30 minutes
@@ -15,12 +15,19 @@ on:
     - deploy
 
 jobs:
-  generate:
+  main:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: denoland/setup-deno@v1
       - name: run
+        uses: oleksiyrudenko/gha-git-credentials@v2.1.1
+        with:
+          global: true
+          name: ${{ variables.GIT_NAME }}
+          email: ${{ secrets.GIT_EMAIL }}
+          actor: ${{ github.repository_owner }}
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         run: |
           # print configured git user and email
           git config --global user.name
