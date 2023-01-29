@@ -1,11 +1,11 @@
-name: Main
+name: Backport
 
 on:
   # run automatically every 30 minutes
   schedule:
     - cron: '*/30 * * * *'
-  
-  # allows to manually run the job at any time
+
+  # allows to manually run the job at any time, also for webhooks
   workflow_dispatch:
   
   # run on every push on the main branch
