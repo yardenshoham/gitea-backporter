@@ -14,7 +14,7 @@ serve(async (req: Request) => {
   if (req.url.endsWith("/trigger")) {
     if (
       req.headers.get("X-Hub-Signature-256") ===
-      "sha256=" + Deno.env.get("WEBHOOK_SECRET_SHA256")
+        "sha256=" + Deno.env.get("WEBHOOK_SECRET_SHA256")
     ) {
       await triggerBackportAction();
       return Response.json({ message: "Triggered backport" });
