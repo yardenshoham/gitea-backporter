@@ -130,11 +130,7 @@ export const addBackportDoneLabel = async (prNumber: number) => {
 // trigger GitHub action using workflow_dispatch
 export const triggerBackportAction = async () => {
   const response = await fetch(
-    `${GITHUB_API}/repos/${
-      Deno.env.get(
-        "GITEA_FORK",
-      )
-    }}/actions/workflows/backport.yml/dispatches`,
+    `${GITHUB_API}/repos/yardenshoham/gitea-backporter/actions/workflows/backport.yml/dispatches`,
     {
       method: "POST",
       headers: HEADERS,
