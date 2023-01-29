@@ -9,7 +9,11 @@ if (
   Deno.exit(1);
 }
 
-serve(async (_: Request) => {
-  await triggerBackportAction();
-  return new Response("OK");
+serve(async (req: Request) => {
+  if (req.url.endsWith("/trigger")) {
+    await triggerBackportAction();
+    return Response.json({ message: "Triggered backport" });
+  } else {
+    return Response.json({ status: "OK" });
+  }
 });
