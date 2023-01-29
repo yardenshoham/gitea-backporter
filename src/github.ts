@@ -126,3 +126,23 @@ export const addBackportDoneLabel = async (prNumber: number) => {
   const json = await response.json();
   console.log(`Added backport/done label to PR: ${json.url}`);
 };
+
+// trigger GitHub action using workflow_dispatch
+export const triggerBackportAction = async () => {
+  const response = await fetch(
+    `${GITHUB_API}/repos/${
+      Deno.env.get(
+        "GITEA_FORK",
+      )
+    }}/actions/workflows/backport.yml/dispatches`,
+    {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify({ ref: "main" }),
+    },
+  );
+  if (!response.ok) {
+    throw new Error(`Failed to trigger backport action: ${response.status}`);
+  }
+  console.log(`Triggered backport action`);
+};
