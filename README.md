@@ -28,7 +28,7 @@ GITEA_FORK= # The fork of go-gitea/gitea to push the backport branch to (e.g. ya
 Then run:
 
 ```bash
-deno run --allow-net --allow-env src/mod.ts
+deno run --allow-net --allow-env --allow-run src/mod.ts
 ```
 
 ## Contributing
