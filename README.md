@@ -21,8 +21,8 @@ original pull request.
 Set the following environment variables:
 
 ```
-GITHUB_TOKEN= # A GitHub personal access token with permissions to add labels to the go-gitea/gitea repo
-GITEA_FORK= # The fork of go-gitea/gitea to push the backport branch to (e.g. yardenshoham/gitea)
+BACKPORTER_GITHUB_TOKEN= # A GitHub personal access token with permissions to add labels to the go-gitea/gitea repo
+BACKPORTER_GITEA_FORK= # The fork of go-gitea/gitea to push the backport branch to (e.g. yardenshoham/gitea)
 ```
 
 Then run:
