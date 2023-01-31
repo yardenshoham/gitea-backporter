@@ -18,7 +18,7 @@ jobs:
           actor: ${{ github.repository_owner }}
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
       - name: run
-        run: deno run --allow-net --allow-env src/mod.ts
+        run: deno run --allow-net --allow-env --allow-run src/mod.ts
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           GITEA_FORK: ${{ github.repository_owner }}/gitea
