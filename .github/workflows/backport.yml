@@ -20,5 +20,5 @@ jobs:
       - name: run
         run: deno run --allow-net --allow-env --allow-run src/mod.ts
         env:
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          GITEA_FORK: ${{ github.repository_owner }}/gitea
+          BACKPORTER_GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          BACKPORTER_GITEA_FORK: ${{ github.repository_owner }}/gitea

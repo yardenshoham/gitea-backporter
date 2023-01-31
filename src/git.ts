@@ -8,7 +8,9 @@ export const initializeGitRepo = async () => {
     cmd: [
       "git",
       "clone",
-      `https://github.com/${Deno.env.get("GITEA_FORK")}.git`,
+      `https://${Deno.env.get("BACKPORTER_GITHUB_TOKEN")}@github.com/${
+        Deno.env.get("BACKPORTER_GITEA_FORK")
+      }.git`,
     ],
   }).status();
   await Deno.run({

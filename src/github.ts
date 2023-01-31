@@ -4,7 +4,7 @@ import { GiteaVersion } from "./giteaVersion.ts";
 const GITHUB_API = "https://api.github.com";
 const HEADERS = {
   "Content-Type": "application/json",
-  Authorization: `Bearer ${Deno.env.get("GITHUB_TOKEN")}`,
+  Authorization: `Bearer ${Deno.env.get("BACKPORTER_GITHUB_TOKEN")}`,
 };
 
 // returns a list of PRs that are merged and have the backport label for the current Gitea version
@@ -70,7 +70,7 @@ export const createBackportPr = async (
     headers: HEADERS,
     body: JSON.stringify({
       title: `${originalPr.title} (#${originalPr.number})`,
-      head: `${Deno.env.get("GITEA_FORK")?.split("/")[0]}:${
+      head: `${Deno.env.get("BACKPORTER_GITEA_FORK")?.split("/")[0]}:${
         getPrBranchName(
           originalPr.number,
           giteaVersion.majorMinorVersion,
