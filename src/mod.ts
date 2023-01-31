@@ -13,7 +13,9 @@ const run = async () => {
     Deno.env.get("BACKPORTER_GITEA_FORK") === undefined ||
     Deno.env.get("BACKPORTER_GITHUB_TOKEN") === undefined
   ) {
-    console.log("BACKPORTER_GITEA_FORK and GITHUB_TOKEN must be set");
+    console.log(
+      "BACKPORTER_GITEA_FORK and BACKPORTER_GITHUB_TOKEN must be set",
+    );
     return;
   }
   const giteaVersion = await GiteaVersion.fetch();
