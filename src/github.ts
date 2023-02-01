@@ -83,6 +83,7 @@ export const createBackportPr = async (
   });
   let json = await response.json();
   console.log(`Created backport PR: ${json.html_url}`);
+  console.log(json);
 
   // filter lgtm/*, backport/* and reviewed/* labels
   const labels = originalPr.labels
@@ -95,23 +96,27 @@ export const createBackportPr = async (
       );
     });
 
+  const body = {
+    labels,
+    assignees: [originalPr.user.login],
+    milestone: await getMilestoneNumber(giteaVersion.nextPatchVersion),
+  };
+
+  console.log("Sending issue PATCH with body:");
+  console.log(body);
+
   // set labels, assignees, and milestone
   response = await fetch(
     `${GITHUB_API}/repos/go-gitea/gitea/issues/${json.number}`,
     {
       method: "PATCH",
       headers: HEADERS,
-      body: JSON.stringify({
-        labels,
-        assignees: [originalPr.user.login],
-        milestone: await getMilestoneNumber(giteaVersion.nextPatchVersion),
-      }),
+      body: JSON.stringify(body),
     },
   );
   json = await response.json();
-  console.log("Labels:", json.labels);
-  console.log("Assignees:", json.assignees);
-  console.log("Milestone:", json.milestone);
+  console.log(`${response.statusText} response from GitHub:`);
+  console.log(json);
 };
 
 export const addBackportDoneLabel = async (prNumber: number) => {
@@ -124,7 +129,11 @@ export const addBackportDoneLabel = async (prNumber: number) => {
     },
   );
   const json = await response.json();
-  console.log(`Added backport/done label to PR: ${json.url}`);
+  console.log(
+    `Added backport/done label to PR #${prNumber}: ${
+      json.map((l: { name: string }) => l.name)
+    }`,
+  );
 };
 
 // trigger GitHub action using workflow_dispatch
