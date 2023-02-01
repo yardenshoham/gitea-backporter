@@ -4,3 +4,10 @@ image:
 vscode:
   extensions:
     - denoland.vscode-deno
+
+github:
+  prebuilds:
+    branches: false
+    pullRequests: false
+    addComment: false
+    addCheck: false
