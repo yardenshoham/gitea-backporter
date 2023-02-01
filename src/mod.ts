@@ -1,7 +1,6 @@
 import { cherryPickPr, initializeGitRepo } from "./git.ts";
 import { GiteaVersion } from "./giteaVersion.ts";
 import {
-  addBackportDoneLabel,
   backportPrExists,
   createBackportPr,
   fetchCandidates,
@@ -41,8 +40,8 @@ const run = async () => {
     console.log(`Creating backport PR for #${originalPr.number}`);
     await createBackportPr(originalPr, giteaVersion);
 
-    console.log(`Adding backport/done label to #${originalPr.number}`);
-    await addBackportDoneLabel(originalPr.number);
+    // console.log(`Adding backport/done label to #${originalPr.number}`);
+    // await addBackportDoneLabel(originalPr.number);
   }
 };
 
