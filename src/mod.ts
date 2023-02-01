@@ -1,6 +1,7 @@
 import { cherryPickPr, initializeGitRepo } from "./git.ts";
 import { GiteaVersion } from "./giteaVersion.ts";
 import {
+  addBackportDoneLabel,
   backportPrExists,
   createBackportPr,
   fetchCandidates,
@@ -25,23 +26,26 @@ const run = async () => {
   }
   await initializeGitRepo();
   for (const candidate of candidates.items) {
+    console.log("Parsing #" + candidate.number);
     if (await backportPrExists(candidate, giteaVersion.majorMinorVersion)) {
       console.log(`Backport PR already exists for #${candidate.number}`);
       continue;
     }
     const originalPr = await fetchPr(candidate.number);
     console.log(`Cherry-picking #${originalPr.number}`);
-    await cherryPickPr(
+    const success = await cherryPickPr(
       originalPr.merge_commit_sha,
       originalPr.number,
       giteaVersion.majorMinorVersion,
     );
 
+    if (!success) continue;
+
     console.log(`Creating backport PR for #${originalPr.number}`);
     await createBackportPr(originalPr, giteaVersion);
 
-    // console.log(`Adding backport/done label to #${originalPr.number}`);
-    // await addBackportDoneLabel(originalPr.number);
+    console.log(`Adding backport/done label to #${originalPr.number}`);
+    await addBackportDoneLabel(originalPr.number);
   }
 };
 

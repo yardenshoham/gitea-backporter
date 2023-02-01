@@ -29,7 +29,7 @@ export const cherryPickPr = async (
   commitHash: string,
   prNumber: number,
   giteaMajorMinorVersion: string,
-) => {
+): Promise<boolean> => {
   // fetch the upstream main branch
   await Deno.run({
     cwd: "gitea",
@@ -64,7 +64,7 @@ export const cherryPickPr = async (
 
   if (!cherryPickStatus.success) {
     console.log("Cherry-pick failed");
-    return;
+    return false;
   }
 
   // push the branch to the fork
@@ -77,4 +77,5 @@ export const cherryPickPr = async (
       getPrBranchName(prNumber, giteaMajorMinorVersion),
     ],
   }).status();
+  return true;
 };
