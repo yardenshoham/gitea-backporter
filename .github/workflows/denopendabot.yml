@@ -1,0 +1,21 @@
+name: Denopendabot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * *"
+
+jobs:
+  run:
+    name: Run App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Dispatch Run
+        uses: hasundue/denopendabot@0.15.0 # @denopendabot hasundue/denopendabot
+        with: 
+          mode: app
+          base-branch: main 
+          working-branch: denopendabot
+          labels: dependencies
+          auto-merge: any
