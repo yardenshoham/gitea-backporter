@@ -6,16 +6,13 @@ on:
     - cron: "0 7 * * *"
 
 jobs:
-  run:
-    name: Run App
+  update:
+    name: Update
     runs-on: ubuntu-latest
-
     steps:
-      - name: Dispatch Run
+      - name: Update
         uses: hasundue/denopendabot@0.15.0 # @denopendabot hasundue/denopendabot
         with: 
-          mode: app
-          base-branch: main 
+          token: ${{ secrets.GITHUB_TOKEN }}
           working-branch: denopendabot
           labels: dependencies
-          auto-merge: any
