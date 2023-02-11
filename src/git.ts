@@ -64,6 +64,10 @@ export const cherryPickPr = async (
 
   if (!cherryPickStatus.success) {
     console.log("Cherry-pick failed");
+    await Deno.run({
+      cwd: "gitea",
+      cmd: ["git", "cherry-pick", "--abort"],
+    }).status();
     return false;
   }
 
