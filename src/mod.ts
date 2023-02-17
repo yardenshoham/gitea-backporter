@@ -31,7 +31,7 @@ const run = async () => {
   }
 };
 
-const parseCandidate = async (candidate: any, giteaVersion: GiteaVersion) => {
+const parseCandidate = async (candidate, giteaVersion: GiteaVersion) => {
   if (await backportPrExists(candidate, giteaVersion.majorMinorVersion)) {
     console.log(`Backport PR already exists for #${candidate.number}`);
     return;
