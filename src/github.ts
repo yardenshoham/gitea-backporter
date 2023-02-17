@@ -1,3 +1,4 @@
+import * as semver from "https://deno.land/std@0.177.0/semver/mod.ts";
 import { getPrBranchName } from "./git.ts";
 import { GiteaVersion } from "./giteaVersion.ts";
 
@@ -45,14 +46,11 @@ export const backportPrExists = async (
   return json.total_count > 0;
 };
 
-// get milestone number for the given Gitea version
-export const getMilestoneNumber = async (milestoneTitle: string) => {
+// get Gitea milestones
+export const getMilestones = async () => {
   const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/milestones`);
   const json = await response.json();
-  const milestone = json.find(
-    (m: { title: string }) => m.title === milestoneTitle,
-  );
-  return milestone.number;
+  return json.filter((m: { title: string }) => semver.valid(m.title));
 };
 
 export const createBackportPr = async (
@@ -114,7 +112,7 @@ export const createBackportPr = async (
       headers: HEADERS,
       body: JSON.stringify({
         assignees: [originalPr.user.login],
-        milestone: await getMilestoneNumber(giteaVersion.nextPatchVersion),
+        milestone: giteaVersion.milestoneNumber,
       }),
     },
   );
