@@ -6,8 +6,8 @@ to a release branch and if the backport can be automated, it will do so.
 
 ## Behavior
 
-First, the script will fetch Gitea's latest release version from the Gitea's
-version endpoint.
+First, the script will fetch Gitea's current development versions from GitHub's
+API.
 
 The script will look for pull requests that have the label
 `backport/v{gitea_version}` but do not have the label `backport/done`. It will
