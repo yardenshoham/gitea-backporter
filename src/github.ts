@@ -50,6 +50,8 @@ export const backportPrExists = async (
 export const getMilestones = async () => {
   const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/milestones`);
   const json = await response.json();
+  console.log("getMilestones status: " + response.status);
+  console.dir(json);
   return json.filter((m: { title: string }) => semver.valid(m.title));
 };
 
