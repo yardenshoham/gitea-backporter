@@ -123,6 +123,13 @@ export const createBackportPr = async (
       }),
     },
   );
+
+  // if the original PR had exactly one backport/* label, add the backport/done label to it
+  const backportLabels = originalPr.labels
+    .filter((label) => label.name.startsWith("backport/"));
+  if (backportLabels.length === 1) {
+    await addBackportDoneLabel(originalPr.number);
+  }
 };
 
 export const addBackportDoneLabel = async (prNumber: number) => {
