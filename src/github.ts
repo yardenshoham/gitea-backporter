@@ -15,6 +15,7 @@ export const fetchCandidates = async (giteaMajorMinorVersion: string) => {
       encodeURIComponent(
         `is:pr is:merged label:backport/v${giteaMajorMinorVersion} -label:backport/done repo:go-gitea/gitea`,
       ),
+    { headers: HEADERS },
   );
   const json = await response.json();
   for (const item of json.items) {
@@ -27,6 +28,7 @@ export const fetchCandidates = async (giteaMajorMinorVersion: string) => {
 export const fetchPr = async (prNumber: number) => {
   const response = await fetch(
     `${GITHUB_API}/repos/go-gitea/gitea/pulls/${prNumber}`,
+    { headers: HEADERS },
   );
   return response.json();
 };
@@ -41,6 +43,7 @@ export const backportPrExists = async (
       encodeURIComponent(
         `is:pr is:open repo:go-gitea/gitea base:release/v${giteaMajorMinorVersion} ${pr.number} in:title`,
       ),
+    { headers: HEADERS },
   );
   const json = await response.json();
   return json.total_count > 0;
@@ -48,10 +51,12 @@ export const backportPrExists = async (
 
 // get Gitea milestones
 export const getMilestones = async () => {
-  const response = await fetch(`${GITHUB_API}/repos/go-gitea/gitea/milestones`);
+  const response = await fetch(
+    `${GITHUB_API}/repos/go-gitea/gitea/milestones`,
+    { headers: HEADERS },
+  );
   const json = await response.json();
   console.log("getMilestones status: " + response.status);
-  console.dir(json);
   return json.filter((m: { title: string }) => semver.valid(m.title));
 };
 
