@@ -13,7 +13,7 @@ export const fetchCandidates = async (giteaMajorMinorVersion: string) => {
   const response = await fetch(
     `${GITHUB_API}/search/issues?q=` +
       encodeURIComponent(
-        `is:pr is:merged label:backport/v${giteaMajorMinorVersion} -label:backport/done repo:go-gitea/gitea`,
+        `is:pr is:merged label:backport/v${giteaMajorMinorVersion} -label:backport/done -label:backport/manual repo:go-gitea/gitea`,
       ),
     { headers: HEADERS },
   );
