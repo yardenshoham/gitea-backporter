@@ -155,7 +155,7 @@ export const addPRComment = async (prNumber: number, comment: string) => {
     {
       method: "POST",
       headers: HEADERS,
-      body: JSON.stringify({body: comment}),
+      body: JSON.stringify({ body: comment }),
     },
   );
   const json = await response.json();
