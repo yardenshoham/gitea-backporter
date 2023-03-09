@@ -47,7 +47,7 @@ const parseCandidate = async (candidate, giteaVersion: GiteaVersion) => {
   );
 
   if (!success) {
-    await addPRComment(
+    await addPrComment(
       originalPr.number,
       "I was unable to automate a backport, please send one manually. :tea:"
     );
