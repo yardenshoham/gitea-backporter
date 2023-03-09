@@ -2,7 +2,7 @@ import { cherryPickPr, initializeGitRepo } from "./git.ts";
 import { GiteaVersion } from "./giteaVersion.ts";
 import {
   addLabels,
-  addPRComment,
+  addPrComment,
   backportPrExists,
   createBackportPr,
   fetchCandidates,
