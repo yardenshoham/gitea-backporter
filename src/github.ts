@@ -148,3 +148,20 @@ export const addBackportDoneLabel = async (prNumber: number) => {
     }`,
   );
 };
+
+export const addPRComment = async (prNumber: number, comment: string) => {
+    const response = await fetch(
+        `${GITHUB_API}/repos/go-gitea/gitea/issues/${prNumber}/comments`,
+        {
+            method: "POST",
+            headers: HEADERS,
+            body: JSON.stringify({ body: comment }),
+        },
+    );
+    const json = await response.json();
+    console.log(
+        `Added backport comment to PR #${prNumber}: ${
+            json.map((c: { body: string }) => c.body)
+        }`,
+    );
+};

@@ -3,6 +3,7 @@ import { GiteaVersion } from "./giteaVersion.ts";
 import {
   backportPrExists,
   createBackportPr,
+  addPRComment,
   fetchCandidates,
   fetchPr,
   getMilestones,
@@ -44,7 +45,10 @@ const parseCandidate = async (candidate, giteaVersion: GiteaVersion) => {
     giteaVersion.majorMinorVersion,
   );
 
-  if (!success) return;
+  if (!success) {
+    await addPRComment(originalPr.number, "I was unable to automate a backport, please send one manually. :tea:")
+    return;
+  }
 
   console.log(`Creating backport PR for #${originalPr.number}`);
   await createBackportPr(originalPr, giteaVersion);
