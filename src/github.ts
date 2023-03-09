@@ -128,17 +128,17 @@ export const createBackportPr = async (
   const backportLabels = originalPr.labels
     .filter((label) => label.name.startsWith("backport/"));
   if (backportLabels.length === 1) {
-    await addBackportDoneLabel(originalPr.number);
+    await addLabels(originalPr.number, ["backport/done"]);
   }
 };
 
-export const addBackportDoneLabel = async (prNumber: number) => {
+export const addLabels = async (prNumber: number, labels: string[]) => {
   const response = await fetch(
     `${GITHUB_API}/repos/go-gitea/gitea/issues/${prNumber}/labels`,
     {
       method: "POST",
       headers: HEADERS,
-      body: JSON.stringify({ labels: ["backport/done"] }),
+      body: JSON.stringify({ labels: labels }),
     },
   );
   const json = await response.json();
