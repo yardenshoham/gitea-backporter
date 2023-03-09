@@ -1,9 +1,9 @@
 import { cherryPickPr, initializeGitRepo } from "./git.ts";
 import { GiteaVersion } from "./giteaVersion.ts";
 import {
+  addPRComment,
   backportPrExists,
   createBackportPr,
-  addPRComment,
   fetchCandidates,
   fetchPr,
   getMilestones,
@@ -46,7 +46,10 @@ const parseCandidate = async (candidate, giteaVersion: GiteaVersion) => {
   );
 
   if (!success) {
-    await addPRComment(originalPr.number, "I was unable to automate a backport, please send one manually. :tea:")
+    await addPRComment(
+      originalPr.number,
+      "I was unable to automate a backport, please send one manually. :tea:"
+    );
     return;
   }
 
