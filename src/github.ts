@@ -149,7 +149,7 @@ export const addLabels = async (prNumber: number, labels: string[]) => {
   );
 };
 
-export const addPRComment = async (prNumber: number, comment: string) => {
+export const addPrComment = async (prNumber: number, comment: string) => {
   const response = await fetch(
     `${GITHUB_API}/repos/go-gitea/gitea/issues/${prNumber}/comments`,
     {
