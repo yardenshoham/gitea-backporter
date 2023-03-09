@@ -1,6 +1,7 @@
 # Gitea Pull Request Backporter
 
-> **Note** This project has moved to https://github.com/GiteaBot/gitea-backporter.
+> **Note** This project has moved to
+> https://github.com/GiteaBot/gitea-backporter.
 
 This is a script that looks for pull requests in
 [go-gitea/gitea](https://github.com/go-gitea/gitea) that need to be backported
